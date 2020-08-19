@@ -13,8 +13,10 @@ For assistance:
 
 const studentList = document.querySelector('.student-list');
 const linkList = document.querySelector('.link-list');
+const header = document.querySelector('.header');
 let itemsPerPage = 9;
 let currentPage = 1;
+let search = document.querySelector('.student-search');
 
 /*
 Create the `showPage` function
@@ -128,7 +130,54 @@ linkList.addEventListener("click", (e) => {
    }
 });
 
+function addSearch() {
+
+   // create label
+   const label = document.createElement('label');
+   label.setAttribute('for', 'search');
+   label.classList = 'student-search';
+
+   // create input
+   const input = document.createElement('input');
+   input.setAttribute('id', 'search');
+   input.setAttribute('placeholder', 'Search by name...');
+   label.appendChild(input);
+
+   // create button
+   const button = document.createElement('button');
+   button.type = 'button';
+   label.appendChild(button);
+
+   // create img
+   const img = document.createElement('img');
+   img.setAttribute('src', 'img/icn-search.svg');
+   img.setAttribute('alt', 'Search Icon');
+   button.appendChild(img);
+
+   header.appendChild(label);
+
+}
+
+search.addEventListener("click", (e) => {
+
+   if (e.target.tagName === 'BUTTON') {
+      debugger;
+      let searchCriteria = data.name.first;
+   
+      for (let i = 0; i < data.length; i++) {
+         if (searchCriteria.toUpperCase().indexOf(search.toUpperCase) > -1) {
+            data[i].email = 'show';
+         } else {
+            data[i].email = 'hide';
+         }
+      }
+
+   }
+
+});
+
 
 // Call functions
 showPage(data, 1);
 addPagination(data);
+addSearch();
