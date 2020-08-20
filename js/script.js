@@ -16,7 +16,7 @@ const linkList = document.querySelector('.link-list');
 const header = document.querySelector('.header');
 let itemsPerPage = 9;
 let currentPage = 1;
-let search = document.querySelector('.student-search');
+var searchData = [];
 
 /*
 Create the `showPage` function
@@ -25,59 +25,83 @@ This function will create and insert/append the elements needed to display a "pa
 function showPage(list, page) {
    let startIndex = (+page * itemsPerPage) - itemsPerPage;
    let endIndex = +page * itemsPerPage;
-
+   studentList.innerHTML = '';
    for (let i = 0; i < list.length; i++) {
-      
+
       if (i >= startIndex && i < endIndex) {
          createStudent(list, i);
       }
 
    }
-
 }
 
 function createStudent(list, i) {
-   
 
    const student = list[i];
 
+   const studentData = {
+      li: {
+         element: 'li',
+         attr: [{ key: 'class', value: 'student-item cf' }]
+      },
+      studentDetails: {
+         element: 'div',
+         attr: [{ key: 'class', value: 'student-details' }]
+      },
+      avatar: {
+         element: 'img',
+         attr: [
+            { key: 'class', value: 'avatar' },
+            { key: 'src', value: student.picture.large },
+            { key: 'alt', value: 'Profile Picture' },
+         ]
+      },
+      studentName: {
+         element: 'h3',
+         content: `${student.name.first} ${student.name.last}`
+      },
+      studentEmail: {
+         element: 'span',
+         attr: [{ key: 'class', value: 'email' }],
+         content: student.email
+      },
+      joinedDetails: {
+         element: 'div',
+         attr: [{ key: 'class', value: 'joined-details' }]
+      },
+      studentJoinDate: {
+         element: 'span',
+         attr: [{ key: 'class', value: 'date' }],
+         content: `Joined ${student.registered.date}`
+      }
+   }
+
    // create li container and set its class
-   const li = document.createElement('li');
-   li.className = 'student-item cf';
+   const li = createElement(studentData.li);
 
    // created studentDetails container and set its class
-   const studentDetails = document.createElement('div');
-   studentDetails.className = 'student-details';
+   const studentDetails = createElement(studentData.studentDetails);
 
    // create student avatar, assign properties and append it to studentDetails
-   const avatar = document.createElement('img');
-   avatar.className = 'avatar';
-   avatar.setAttribute('src', student.picture.large);
-   avatar.setAttribute('alt', 'Profile Picture');
+   const avatar = createElement(studentData.avatar);
    studentDetails.appendChild(avatar);
-   
+
    // create student name, assign properties and append it to studentDetails
-   const studentName = document.createElement('h3');
-   studentName.textContent = `${student.name.first} ${student.name.last}`;
+   const studentName = createElement(studentData.studentName);
    studentDetails.appendChild(studentName);
-   
+
    // create student email, assign properties and append it to studentDetails
-   const studentEmail = document.createElement('span');
-   studentEmail.className = 'email';
-   studentEmail.textContent = student.email;
+   const studentEmail = createElement(studentData.studentEmail);
    studentDetails.appendChild(studentEmail);
 
    // appent studentDetails to li
    li.appendChild(studentDetails);
 
    // create joinedDetail and assign properties
-   const joinedDetails = document.createElement('div');
-   joinedDetails.className = 'joined-details';
+   const joinedDetails = createElement(studentData.joinedDetails);
 
    // create joinedDate, assign properties and append it to joinedDetail
-   const studentJoinDate = document.createElement('span');
-   studentJoinDate.className = 'date';
-   studentJoinDate.textContent = `Joined ${student.registered.date}`;
+   const studentJoinDate = createElement(studentData.studentJoinDate);
    joinedDetails.appendChild(studentJoinDate);
 
    // append joinedDetails to li
@@ -87,6 +111,8 @@ function createStudent(list, i) {
    studentList.appendChild(li);
 }
 
+
+
 /*
 Create the `addPagination` function
 This function will create and insert/append the elements needed for the pagination buttons
@@ -94,12 +120,12 @@ This function will create and insert/append the elements needed for the paginati
 
 function addPagination(list) {
    const pageCount = Math.ceil(list.length / itemsPerPage);
-
-   for (i = 1; i < pageCount; i++) {
+   linkList.innerHTML = '';
+   for (i = 1; i <= pageCount; i++) {
 
       // create li
       const li = document.createElement('li');
-   
+
       // createButton
       const button = document.createElement('button');
       button.type = 'button';
@@ -132,52 +158,124 @@ linkList.addEventListener("click", (e) => {
 
 function addSearch() {
 
+   const search = {
+      label: {
+         element: 'label',
+         attr: [
+            { key: 'for', value: 'search' },
+            { key: 'class', value: 'student-search' }
+         ]
+      },
+      input: {
+         element: 'input',
+         attr: [
+            { key: 'id', value: 'search' },
+            { key: 'placeholder', value: 'Search...' }
+         ]
+      },
+      button: {
+         element: 'button',
+         attr: [
+            { key: 'type', value: 'button' }
+         ]
+      },
+      icon: {
+         element: 'img',
+         attr: [
+            { key: 'src', value: 'img/icn-search.svg' },
+            { key: 'alt', value: 'Search Icon' }
+         ]
+      }
+   }
+
    // create label
-   const label = document.createElement('label');
-   label.setAttribute('for', 'search');
-   label.classList = 'student-search';
+   const searchLabel = createElement(search.label);
 
    // create input
-   const input = document.createElement('input');
-   input.setAttribute('id', 'search');
-   input.setAttribute('placeholder', 'Search by name...');
-   label.appendChild(input);
+   const searchInput = createElement(search.input);
+   searchLabel.appendChild(searchInput);
 
    // create button
-   const button = document.createElement('button');
-   button.type = 'button';
-   label.appendChild(button);
+   const searchBtn = createElement(search.button);
+   searchLabel.appendChild(searchBtn);
 
    // create img
-   const img = document.createElement('img');
-   img.setAttribute('src', 'img/icn-search.svg');
-   img.setAttribute('alt', 'Search Icon');
-   button.appendChild(img);
+   const searchIcon = createElement(search.icon);
+   searchBtn.appendChild(searchIcon);
 
-   header.appendChild(label);
-
+   header.appendChild(searchLabel);
 }
 
-search.addEventListener("click", (e) => {
-
+header.addEventListener("click", (e) => {
    if (e.target.tagName === 'BUTTON') {
-      debugger;
-      let searchCriteria = data.name.first;
-   
-      for (let i = 0; i < data.length; i++) {
-         if (searchCriteria.toUpperCase().indexOf(search.toUpperCase) > -1) {
-            data[i].email = 'show';
-         } else {
-            data[i].email = 'hide';
+      const searchCriteria = document.getElementById('search');
+      if (searchCriteria.value) {
+         for (let i = 0; i < itemsPerPage; i++) {
+
+            const studentData = `${data[i].name.title} ${data[i].name.first} ${data[i].name.last} ${data[i].email} ${data[i].registered.date}`;
+
+            if (studentData.toUpperCase().indexOf(searchCriteria.value.toUpperCase()) > -1) {
+               if (!searchData.includes(data[i])) {
+                  searchData.push(data[i]);
+               }
+            }
          }
+
+         addResults();
+         showPage(searchData, 1);
+         addPagination(searchData);
+
+      } else {
+         addResults();
+         searchData = [];
+         showPage(data, 1);
+         addPagination(data);
       }
+   }
+});
+
+function addResults() {
+   const searchCriteria = document.getElementById('search').value;
+   const results = document.querySelector('.search-results');
+   if (results) {
+      results.remove();
+   }
+
+   if (searchCriteria) {
+
+      const searchInfo = document.createElement('div');
+      searchInfo.className = 'search-results';
+
+      const span = document.createElement('span');
+      if (searchData.length > 0) {
+         span.textContent = `Showing results for "${searchCriteria}"`;
+      } else {
+         span.textContent = 'No results found!'
+      }
+      searchInfo.appendChild(span);
+
+      studentList.parentNode.insertBefore(searchInfo, studentList);
 
    }
 
-});
+}
 
+
+function createElement(element) {
+   const ele = document.createElement(element.element);
+   if (element.attr) {
+      for (let i = 0; i < element.attr.length; i++) {
+         ele.setAttribute(element.attr[i].key, element.attr[i].value);
+      }
+   }
+   if (element.content) {
+      ele.textContent = element.content;
+   }
+   return ele;
+}
 
 // Call functions
 showPage(data, 1);
 addPagination(data);
 addSearch();
+
