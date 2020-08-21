@@ -27,7 +27,7 @@ function showPage(list, page) {
    let endIndex = +page * itemsPerPage;
    studentList.innerHTML = '';
    for (let i = 0; i < list.length; i++) {
-
+      // Creates 6 student li and appends them to the studentList ul
       if (i >= startIndex && i < endIndex) {
          createStudent(list, i);
       }
@@ -111,8 +111,6 @@ function createStudent(list, i) {
    studentList.appendChild(li);
 }
 
-
-
 /*
 Create the `addPagination` function
 This function will create and insert/append the elements needed for the pagination buttons
@@ -123,10 +121,10 @@ function addPagination(list) {
    linkList.innerHTML = '';
    for (i = 1; i <= pageCount; i++) {
 
-      // create li
+      // creates li which will contain the pagination button
       const li = document.createElement('li');
 
-      // createButton
+      // createButton and appends it to the li
       const button = document.createElement('button');
       button.type = 'button';
       button.textContent = i;
@@ -141,21 +139,23 @@ function addPagination(list) {
 
 }
 
+// Listens to the pagination buttons
 linkList.addEventListener("click", (e) => {
    if (e.target.tagName === 'BUTTON') {
-
+      // removes class from the current active page
       const activeBtn = document.getElementsByClassName('active')[0];
       activeBtn.className = ''
-
+      // assigns the active class to the new active page and reassigns currentPage value
       const button = e.target;
       button.classList = 'active';
       currentPage = +button.textContent;
-
+      // removes studentList and calls the showPage with the updated parameters
       studentList.innerHTML = '';
       showPage(data, currentPage);
    }
 });
 
+// Adds the search filter on the top
 function addSearch() {
 
    const search = {
@@ -206,34 +206,35 @@ function addSearch() {
    header.appendChild(searchLabel);
 }
 
+// Listens for search button click
 header.addEventListener("click", (e) => {
    if (e.target.tagName === 'BUTTON') {
       const searchCriteria = document.getElementById('search');
+      searchData = [];
       if (searchCriteria.value) {
-         for (let i = 0; i < itemsPerPage; i++) {
-
+         for (let i = 0; i < data.length; i++) {
+            // Concatenation of all student values to avoid looping through the object
             const studentData = `${data[i].name.title} ${data[i].name.first} ${data[i].name.last} ${data[i].email} ${data[i].registered.date}`;
-
+            // compares the concatenated values with the search criteria
             if (studentData.toUpperCase().indexOf(searchCriteria.value.toUpperCase()) > -1) {
+               // checks if searchData doesnt have the current student object and adds it to searchData array
                if (!searchData.includes(data[i])) {
                   searchData.push(data[i]);
                }
             }
          }
 
-         addResults();
-         showPage(searchData, 1);
-         addPagination(searchData);
-
       } else {
-         addResults();
-         searchData = [];
-         showPage(data, 1);
-         addPagination(data);
+         searchData = data;
       }
+
+      addResults();
+      showPage(searchData, 1);
+      addPagination(searchData);
    }
 });
 
+// this function adds a description showing 
 function addResults() {
    const searchCriteria = document.getElementById('search').value;
    const results = document.querySelector('.search-results');
@@ -245,10 +246,11 @@ function addResults() {
 
       const searchInfo = document.createElement('div');
       searchInfo.className = 'search-results';
-
       const span = document.createElement('span');
+
+      // Shows the user the search value and QTY found or tells the users that no results were found
       if (searchData.length > 0) {
-         span.textContent = `Showing results for "${searchCriteria}"`;
+         span.textContent = `Showing ${searchData.length} results for "${searchCriteria}"`;
       } else {
          span.textContent = 'No results found!'
       }
@@ -260,7 +262,7 @@ function addResults() {
 
 }
 
-
+// this function accepts an object as a parameter and returns an element with its properties
 function createElement(element) {
    const ele = document.createElement(element.element);
    if (element.attr) {
