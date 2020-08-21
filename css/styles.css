@@ -75,6 +75,7 @@ header h2 {
 
 .student-search button img {
   width: 25px;
+  pointer-events: none;
 }
 
 
@@ -207,4 +208,11 @@ header h2 {
 		border-radius: 5px;
 		box-shadow: 0 4px 16px 0 rgba(22, 42, 90, 0.09);
 	}
+}
+
+/* custom classes */
+
+.search-results {
+  padding-bottom: 20px;
+  text-align: center;
 }
